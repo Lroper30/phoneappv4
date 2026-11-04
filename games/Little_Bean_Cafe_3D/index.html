@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Little Bean Café — Restaurant Tycoon 3D</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game">
+    <canvas id="world" aria-label="3D café game"></canvas>
+
+    <section id="titleScreen" class="overlay">
+      <div class="title-card">
+        <div class="eyebrow">FIRST-PERSON BUSINESS SIMULATOR</div>
+        <h1 id="titleStoreName">Little Bean <span>Café</span></h1>
+        <p>Build a neighborhood café into a city-famous restaurant: hire staff, expand your floor, unlock specials, and grow your reputation.</p>
+        <div class="feature-row">
+          <span>☕ Cook orders</span><span>👥 Hire a team</span><span>🏗️ Expand your restaurant</span><span>💾 Save your progress</span>
+        </div>
+        <label class="store-name-field" for="storeNameInput">NAME YOUR STORE<input id="storeNameInput" maxlength="28" value="Little Bean Café" placeholder="Enter your store name" autocomplete="off"></label>
+        <button id="startButton" class="primary">OPEN YOUR CAFÉ</button>
+        <p class="small">WASD move · Mouse look · E interact · B shop · Tab free mouse · Shift sprint · P pause</p>
+      </div>
+    </section>
+
+    <section id="pauseScreen" class="overlay hidden">
+      <div class="title-card compact">
+        <button class="close-button" id="closePause" aria-label="Close pause menu">×</button>
+        <div class="eyebrow">TAKE A BREATHER</div>
+        <h2>Café paused</h2>
+        <p>Your customers will wait while you plan your next move.</p>
+        <button id="resumeButton" class="primary">BACK TO THE CAFÉ</button>
+        <button id="resetButton" class="secondary">RESTART DAY</button>
+      </div>
+    </section>
+
+    <section id="introToast" class="toast hidden"></section>
+
+    <header id="hud" class="hud hidden">
+      <div class="brand-mark"><span class="bean">●</span><div><strong id="storeNameHud">Little Bean Café</strong><small>CAFÉ OWNER · DAY-BY-DAY</small></div></div>
+      <div class="stats">
+        <div class="stat"><small>CASH</small><strong id="cashValue">$120</strong></div>
+        <div class="stat"><small>DAY</small><strong id="dayValue">1</strong></div>
+        <div class="stat"><small>REPUTATION</small><strong id="repValue">★ 1.0</strong></div>
+        <div class="stat"><small>OPEN HOURS</small><strong id="timeValue">8:00 AM</strong></div>
+      </div>
+      <div class="hud-actions"><button id="quickShopButton" class="hud-button" title="Supplies and upgrades">SHOP</button><button id="settingsButton" class="hud-button" title="Game settings">⚙</button><button id="pauseButton" class="pause-button" title="Pause (P)">P</button></div>
+    </header>
+
+    <div id="crosshair" class="crosshair hidden"><span></span><i></i></div>
+    <div id="interactionHint" class="interaction-hint hidden"><kbd>E</kbd><span id="hintText">Interact</span></div>
+    <div id="message" class="message hidden"></div>
+
+    <aside id="orderPanel" class="panel order-panel hidden">
+      <div class="panel-heading"><div><small>ACTIVE TICKET</small><h3>Customer order</h3></div><span class="ticket-icon">▤</span></div>
+      <div id="orderList" class="order-list"><p class="muted">No orders yet.</p></div>
+      <div class="panel-foot"><span>Serve at the counter</span><strong id="orderCount">0 waiting</strong></div>
+    </aside>
+
+    <aside id="taskPanel" class="panel task-panel hidden">
+      <div class="panel-heading"><div><small>YOUR NEXT STEPS</small><h3>Opening checklist</h3></div><span class="ticket-icon">✓</span></div>
+      <div id="taskList" class="task-list"></div>
+      <div class="progress-track"><div id="taskProgress"></div></div>
+    </aside>
+
+    <div id="bottomBar" class="bottom-bar hidden">
+      <div class="tip"><span class="tip-icon">✦</span><span id="tipText">Welcome! Head to the espresso machine and press E.</span></div>
+      <div class="controls"><span><kbd>W A S D</kbd> MOVE</span><span><kbd>E</kbd> INTERACT</span><span><kbd>SHIFT</kbd> SPRINT</span><span><kbd>B</kbd> SHOP</span><span><kbd>TAB</kbd> FREE MOUSE</span><span><kbd>P</kbd> PAUSE</span></div>
+    </div>
+
+    <div id="furniturePlacementBar" class="placement-bar hidden" role="status" aria-live="polite"><div><strong id="placementTitle">Place your furniture</strong><small>Click an open spot in the front park. Move your mouse to preview.</small></div><button id="rotatePlacement" type="button">ROTATE ↻</button><button id="cancelPlacement" type="button">CANCEL ×</button></div>
+
+    <section id="stationModal" class="modal hidden">
+      <div class="modal-card">
+        <button class="close-button" id="closeStation" aria-label="Close">×</button>
+        <div class="eyebrow" id="stationEyebrow">CAFÉ STATION</div>
+        <h2 id="stationTitle">Espresso machine</h2>
+        <p id="stationDescription">Make a fresh drink for your customers.</p>
+        <div id="stationContent"></div>
+      </div>
+    </section>
+
+    <section id="shopModal" class="modal hidden">
+      <div class="modal-card shop-card">
+        <button class="close-button" id="closeShop" aria-label="Close">×</button>
+        <div class="eyebrow">GROW YOUR BUSINESS</div>
+        <h2>Build your café empire</h2>
+        <p>Upgrade equipment, hire specialists, unlock themes, place furniture, expand guest capacity, restock ingredients, and complete daily service challenges. Your progress saves automatically in this browser.</p>
+        <div id="upgradeList" class="upgrade-list"></div>
+      </div>
+    </section>
+
+    <section id="cookModal" class="modal cook-modal hidden">
+      <button class="close-button modal-close-light" id="closeCook" aria-label="Close cooking">×</button>
+      <div class="cook-card">
+        <div class="cook-visual"><div class="cook-glow"></div><div id="cookEmoji" class="cook-emoji">☕</div><div class="steam steam-one"></div><div class="steam steam-two"></div></div>
+        <div class="cook-copy"><div class="eyebrow">IN THE KITCHEN · PREPARATION CUTSCENE</div><h2 id="cookTitle">Crafting your order</h2><p id="cookDescription">Fresh ingredients, careful preparation.</p><div class="cook-progress"><div id="cookProgress"></div></div><div class="cook-step-label" id="cookStepLabel">STEP 1 OF 5 · PICK THE RIGHT INGREDIENT</div><div id="ingredientChoices" class="ingredient-choices" aria-label="Choose an ingredient"></div><button id="holdCookButton" class="hold-cook-button" type="button">HOLD TO PREPARE</button><button id="cookNextButton" class="primary" disabled>PREPARE THE INGREDIENT FIRST</button><button id="cookSkipButton" class="text-button">Skip cutscene</button></div>
+      </div>
+    </section>
+
+    <section id="settingsModal" class="modal hidden">
+      <div class="modal-card settings-card"><button class="close-button" id="closeSettings" aria-label="Close">×</button><div class="eyebrow">MAKE IT YOUR CAFÉ</div><h2>Game settings</h2><p>Choose how challenging and detailed your café shift should be.</p>
+        <label class="setting-row"><span><strong>Difficulty</strong><small>Changes customer patience, rush frequency, and rewards.</small></span><select id="difficultySelect"><option value="easy">Cozy</option><option value="normal" selected>Classic</option><option value="hard">Rush Hour</option><option value="expert">Café Master</option></select></label>
+        <label class="setting-row"><span><strong>Track ingredient stock</strong><small>Ingredients run low and must be restocked in the shop.</small></span><input id="stockToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Food preparation cutscenes</strong><small>Show a short cinematic sequence when making menu items.</small></span><input id="cutsceneToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Customer rushes</strong><small>Occasional waves of extra customers.</small></span><input id="rushToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Sound effects</strong><small>Door chime, coffee machine, cash register, and UI sounds.</small></span><input id="soundToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Automatic entrance door</strong><small>Open the café door as you approach it. Turn off for a manual-feeling entrance.</small></span><input id="autoDoorToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Camera sensitivity</strong><small>Adjust how quickly the mouse turns the camera.</small></span><input id="sensitivityRange" type="range" min="5" max="25" value="12"></label>
+        <button id="saveSettingsButton" class="primary">SAVE SETTINGS</button>
+      </div>
+    </section>
+
+    <section id="endDayModal" class="modal hidden">
+      <div class="modal-card">
+        <button class="close-button" id="closeEndDay" aria-label="Close end of day summary">×</button>
+        <div class="eyebrow">CLOSING TIME</div>
+        <h2>Another day, well brewed.</h2>
+        <div id="daySummary" class="day-summary"></div>
+        <button id="nextDayButton" class="primary">OPEN TOMORROW</button>
+      </div>
+    </section>
+  </div>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>

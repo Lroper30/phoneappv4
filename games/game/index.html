@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f5f2e9">
+	<title>Black Jack — Play for your next place</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<script src="script.js" defer></script>
+</head>
+<body>
+	<div class="app-shell casino-mode">
+		<aside class="sidebar">
+			<a class="brand" href="#play" aria-label="Black Jack home">
+				<span class="brand-mark" aria-hidden="true">♧</span>
+				<span>Black<span class="brand-light"> Jack</span></span>
+			</a>
+			<div class="sidebar-label">YOUR WORLD</div>
+			<nav class="main-nav" aria-label="Main navigation">
+				<button class="nav-link active" data-view="play"><span class="nav-icon">◈</span>Play <span class="nav-arrow">↗</span></button>
+				<button class="nav-link" data-view="homes"><span class="nav-icon">⌂</span>My homes</button>
+				<button class="nav-link" data-view="grow"><span class="nav-icon">↗</span>Grow</button>
+				<button class="nav-link" data-view="collection"><span class="nav-icon">▧</span>Collection</button>
+			</nav>
+			<div class="sidebar-spacer"></div>
+			<div class="sidebar-note">
+				<span class="note-spark">✳</span>
+				<p>A little luck can<br>go a long way.</p>
+				<span class="note-caption">JUST FOR FUN · NO REAL MONEY</span>
+			</div>
+			<button class="reset-button" id="reset-game" title="Reset all progress">↺ <span>Start fresh</span></button>
+		</aside>
+
+		<main class="main-content">
+			<header class="topbar">
+				<div class="breadcrumb"><span class="brand-mark" aria-hidden="true">♧</span><span class="casino-brand-name">Black<span> Jack</span></span><span class="breadcrumb-dot"></span><span id="page-label">THE CASINO FLOOR</span></div>
+				<nav class="casino-nav" aria-label="Floor navigation">
+					<button class="casino-nav-link active" data-view="play">The floor</button>
+					<button class="casino-nav-link" data-view="homes">Homes</button>
+					<button class="casino-nav-link" data-view="grow">Grow</button>
+					<button class="casino-nav-link" data-view="collection">Collection</button>
+				</nav>
+				<div class="topbar-right">
+					<span class="play-for-fun"><span></span>Play for fun</span>
+					<div class="balance-pill"><span class="coin-mark">✦</span><span id="balance">1,000</span><span class="coin-label">COINS</span></div>
+					<button class="avatar" aria-label="Player profile">J</button>
+				</div>
+			</header>
+
+			<section class="view-panel" id="play-view">
+				<section class="casino-floor" aria-label="Black Jack casino floor">
+					<div class="casino-floor-copy">
+						<p class="casino-eyebrow"><span class="floor-live-dot"></span> BLACK JACK · THE FLOOR IS OPEN</p>
+						<h1>Find your<br><span>lucky table.</span></h1>
+						<p class="casino-floor-description">Take a seat, try your hand, or test your timing. Every coin here is make-believe.</p>
+						<div class="floor-highlights"><span><strong>54</strong> ways to play</span><i></i><span><strong>2</strong> skill tables</span><i></i><span>Just for fun</span></div>
+						<button class="floor-cta" id="browse-floor">Browse the tables <span>↓</span></button>
+					</div>
+					<div class="casino-floor-art" aria-hidden="true">
+						<svg viewBox="0 0 620 320" role="presentation">
+							<path d="M24 250 Q50 191 133 191 H486 Q568 191 596 250 L569 300 H52Z" fill="#0c241e" opacity=".6"/>
+							<path d="M55 202 Q75 133 167 129 H452 Q545 133 568 202 L544 246 H78Z" fill="#a2783e"/>
+							<path d="M67 197 Q86 142 169 139 H451 Q533 142 555 197 L534 231 H84Z" fill="#1c4b3b" stroke="#e0bc70" stroke-width="3"/>
+							<ellipse cx="310" cy="183" rx="98" ry="65" fill="#183d32" stroke="#d8b76a" stroke-width="3"/>
+							<ellipse cx="310" cy="183" rx="77" ry="51" fill="none" stroke="#80a485" stroke-width="2" stroke-dasharray="3 5"/>
+							<path d="M310 118 A65 65 0 0 1 366 151 L310 183Z" fill="#b84e42"/><path d="M366 151 A65 65 0 0 1 366 216 L310 183Z" fill="#1c2925"/><path d="M366 216 A65 65 0 0 1 310 248 L310 183Z" fill="#b84e42"/><path d="M310 248 A65 65 0 0 1 254 216 L310 183Z" fill="#1c2925"/><path d="M254 216 A65 65 0 0 1 254 151 L310 183Z" fill="#b84e42"/><path d="M254 151 A65 65 0 0 1 310 118 L310 183Z" fill="#1c2925"/>
+							<circle cx="310" cy="183" r="24" fill="#d3ad5f"/><circle cx="310" cy="183" r="15" fill="#244c3c"/><path d="M310 120V162 M366 151 329 172 M366 216 329 194 M310 246V204 M255 216 291 194 M255 151 291 172" stroke="#dfc57f" stroke-width="2"/><path d="M120 173 Q139 160 158 174 L151 207 H127Z M460 173 Q479 160 498 174 L491 207 H467Z" fill="#f6f0de" stroke="#c8b994" stroke-width="2"/><path d="M128 180 H150 M468 180 H490" stroke="#be6250" stroke-width="4"/><circle cx="177" cy="211" r="9" fill="#c9614d"/><circle cx="195" cy="211" r="9" fill="#edc95f"/><circle cx="213" cy="211" r="9" fill="#46725b"/><path d="M145 89 Q173 58 204 92 L195 105 H154Z" fill="#fdf8e9" stroke="#ddd4c1" stroke-width="2"/><path d="M432 78 Q456 48 483 79 L476 92 H439Z" fill="#e2bd63" stroke="#f8dfa0" stroke-width="2"/><path d="M183 105 L202 91 M449 91 465 79" stroke="#c49b49" stroke-width="3"/>
+							<circle cx="91" cy="93" r="3" fill="#e8cb81"/><circle cx="526" cy="119" r="3" fill="#d88664"/><path d="M80 269 H542" stroke="#947642" stroke-width="2"/>
+						</svg>
+						<span class="floor-art-caption">ROULETTE · CARDS · A LITTLE LUCK</span>
+					</div>
+				</section>
+				<div class="welcome-stats casino-quick-stats">
+					<div class="stat-card"><span class="stat-label">YOUR COLLECTION</span><strong id="owned-count">0 <span>homes</span></strong><span class="stat-foot">A little room to grow</span></div>
+					<div class="stat-card stat-card-dark"><span class="stat-label">BEST RUN</span><strong id="best-run">0 <span>coins</span></strong><span class="stat-foot">Your biggest single win</span></div>
+				</div>
+
+				<div class="section-heading game-heading">
+					<div><span class="section-kicker">PICK YOUR PLEASURE</span><h2>Pick a table</h2></div>
+					<span class="section-side-note"><span class="live-dot"></span><span id="game-count">54 games open</span></span>
+				</div>
+				<div class="game-tools">
+					<div class="game-filter-row" id="game-filters" aria-label="Filter games"></div>
+					<label class="game-search"><span aria-hidden="true">⌕</span><input id="game-search" type="search" placeholder="Find a game" aria-label="Find a game"><kbd>/</kbd></label>
+				</div>
+				<div class="games-grid" id="games-grid" aria-live="polite"></div>
+				<footer class="page-footer"><span>BLACK JACK</span><span>Every coin is pretend. Keep it light, keep it fun.</span><span>✳ &nbsp; MADE FOR A LITTLE FUN</span></footer>
+			</section>
+
+			<section class="view-panel hidden" id="homes-view">
+				<div class="subpage-intro"><p class="eyebrow"><span class="eyebrow-star">✳</span> YOUR NEXT CHAPTER</p><h1>Find your <span>happy place.</span></h1><p class="welcome-copy">Trade in your lucky streak for somewhere new to call home.</p></div>
+				<div class="home-feature"><div class="home-feature-art"><svg viewBox="0 0 500 290" role="img" aria-label="Illustration of a cozy green cottage beneath a sunny sky"><circle cx="404" cy="72" r="33" fill="#F3C760"/><path d="M0 200 Q115 150 235 198 T500 183 V290 H0Z" fill="#A6C58E"/><path d="M0 235 Q135 200 276 230 T500 224 V290 H0Z" fill="#668B68"/><path d="M106 158 L250 57 L396 158 V255 H106Z" fill="#F3E8D0"/><path d="M82 158 L250 37 L420 158 H385 L250 63 L116 158Z" fill="#B95E43"/><path d="M209 255 V180 Q250 147 290 180 V255Z" fill="#446D61"/><circle cx="274" cy="217" r="3" fill="#F2CD6A"/><path d="M138 169 H192 V211 H138Z M316 169 H365 V211 H316Z" fill="#92B8A8"/><path d="M138 187 H192 M316 187 H365" stroke="#F3E8D0" stroke-width="5"/><path d="M153 238 Q141 215 124 238 Q140 242 153 238 M359 233 Q375 209 392 233 Q374 238 359 233" fill="#F2C76A"/><path d="M159 236 V257 M375 232 V256" stroke="#536E52" stroke-width="3"/></svg><div class="art-caption"><span>01 / A FRESH START</span><span>THE MEADOW COTTAGE</span></div></div><div class="home-feature-info"><div class="home-tier">YOUR FIRST PLACE</div><h2>Meadow<br>Cottage</h2><p>A sunny little hideaway with room to dream. Every great story starts somewhere.</p><div class="home-price"><span class="coin-mark">✦</span><strong>Free</strong></div><button class="primary-button" id="claim-home">Claim your cottage <span>→</span></button></div></div>
+				<div class="section-heading decorator-heading"><div><span class="section-kicker">MAKE YOUR PLACE YOURS</span><h2>Home interiors</h2></div><label class="home-picker-label">YOUR HOME<select id="home-picker" aria-label="Choose a home to decorate"></select></label></div>
+				<div class="home-decorator"><div class="decorator-rooms" id="decorator-rooms"></div><aside class="decorator-inventory"><span class="section-kicker">YOUR KEEPSAKES</span><strong id="decorator-inventory-count">0 available</strong><p>Place a keepsake in a room, or move one to a new spot.</p><div class="decorator-upgrade"><span id="room-upgrade-copy">Unlock another room for your home.</span><button class="room-upgrade-button" id="upgrade-home-room">Upgrade a room</button></div></aside></div>
+				<div class="section-heading houses-heading"><div><span class="section-kicker">SOMETHING TO AIM FOR</span><h2>Places worth the play</h2></div><span class="section-side-note" id="house-count-note">0 of 12 collected</span></div>
+				<div class="house-grid" id="house-grid"></div>
+				<footer class="page-footer"><span>BLACK JACK</span><span>Every coin is pretend. Keep it light, keep it fun.</span><span>✳ &nbsp; MADE FOR A LITTLE FUN</span></footer>
+			</section>
+
+			<section class="view-panel hidden" id="collection-view">
+				<div class="subpage-intro"><p class="eyebrow"><span class="eyebrow-star">✳</span> THE GOOD THINGS</p><h1>Your <span>little collection.</span></h1><p class="welcome-copy">Homes, keepsakes, and the lucky things you've picked up along the way.</p></div>
+				<div class="collection-summary"><div><span class="section-kicker">HOMES FOUND</span><strong id="collection-homes">0 / 12</strong></div><div><span class="section-kicker">LUCKY FINDS</span><strong id="collection-items">0</strong></div><div><span class="section-kicker">TOTAL WON</span><strong id="collection-winnings">0 <small>coins</small></strong></div></div>
+				<div class="section-heading collection-heading"><div><span class="section-kicker">YOUR PLACES</span><h2>Homes</h2></div></div><div class="collection-home-grid" id="collection-home-grid"></div>
+				<div class="section-heading collection-heading"><div><span class="section-kicker">LITTLE LUCKY THINGS</span><h2>Keepsakes</h2></div></div><div class="item-grid" id="item-grid"></div>
+				<div class="section-heading collection-heading shop-heading"><div><span class="section-kicker">MAKE IT YOURS</span><h2>The little shop</h2></div><span class="section-side-note">Buy something nice for your place</span></div><div class="shop-grid" id="shop-grid"></div>
+				<footer class="page-footer"><span>BLACK JACK</span><span>Every coin is pretend. Keep it light, keep it fun.</span><span>✳ &nbsp; MADE FOR A LITTLE FUN</span></footer>
+			</section>
+
+			<section class="view-panel hidden" id="grow-view">
+				<div class="subpage-intro"><p class="eyebrow"><span class="eyebrow-star">✳</span> A LITTLE MORE THAN LUCK</p><h1>Make your coins <span>grow.</span></h1><p class="welcome-copy">Take on a small job or put your pretend coins to work. No bets needed.</p></div>
+				<div class="growth-banner"><span class="growth-banner-icon">↗</span><div><span class="section-kicker">YOUR NEXT LITTLE WIN</span><h2>Good things grow a little at a time.</h2><p>Finish today's jobs or choose a project with its own chance of a gain or loss.</p></div><div class="growth-balance"><span class="stat-label">AVAILABLE</span><strong><span class="coin-mark">✦</span> <span id="growth-balance">500</span></strong></div></div>
+				<div class="section-heading growth-heading"><div><span class="section-kicker">DROP IN ANYTIME</span><h2>The arcade</h2></div><span class="section-side-note">Pay a small entry · Play again whenever</span></div><div class="minigame-grid" id="minigame-grid"></div>
+				<div class="section-heading growth-heading"><div><span class="section-kicker">WORK A LITTLE, EARN A LITTLE</span><h2>Today's job board</h2></div><span class="section-side-note" id="jobs-remaining">9 still to do</span></div><div class="jobs-grid" id="jobs-grid"></div>
+				<div class="section-heading growth-heading"><div><span class="section-kicker">RISK AND REWARD</span><h2>Pick a project</h2></div><span class="section-side-note">Each stake can grow or lose value</span></div><div class="investment-grid" id="investment-grid"></div>
+				<footer class="page-footer"><span>BLACK JACK</span><span>Every coin is pretend. Keep it light, keep it fun.</span><span>✳ &nbsp; MADE FOR A LITTLE FUN</span></footer>
+			</section>
+		</main>
+	</div>
+
+	<dialog class="game-dialog" id="game-dialog" aria-labelledby="dialog-title">
+		<header class="full-game-topbar">
+			<button class="game-exit" id="exit-game" type="button" aria-label="Back to casino floor"><span>←</span> <span>Back to floor</span></button>
+			<div class="full-game-brand"><span class="brand-mark" aria-hidden="true">♧</span><span>Black<span> Jack</span></span></div>
+			<div class="full-game-bankroll"><span>YOUR BALANCE</span><strong><span class="coin-mark">✦</span> <span id="dialog-balance">1,000</span></strong></div>
+		</header>
+		<div class="full-game-content">
+			<section class="full-game-table">
+				<div class="full-game-heading"><div class="dialog-kicker" id="dialog-kicker">A LITTLE GAME</div><h1 id="dialog-title">Lucky flip</h1><p class="dialog-description" id="dialog-description">Call it in the air. Pick a side to get started.</p></div>
+				<div class="full-table-surface">
+					<div class="round-stage" id="round-stage" aria-hidden="true"><div class="round-animation" id="round-animation"></div><span class="round-caption" id="round-caption">YOUR LUCK IS READY</span></div>
+					<div class="hand-table" id="hand-table" aria-live="polite"></div>
+					<div class="game-result" id="game-result" aria-live="polite"></div>
+				</div>
+				<p class="table-fine-print">Pretend coins only. No cash, purchases, or prizes.</p>
+			</section>
+			<aside class="full-game-controls">
+				<div class="control-rail-heading"><span class="section-kicker">YOUR NEXT MOVE</span><strong id="control-rail-title">Place your wager</strong></div>
+				<div class="wager-control"><label for="wager">YOUR WAGER</label><div class="wager-input-wrap"><span class="coin-mark">✦</span><input type="number" id="wager" min="10" max="1000" step="10" value="50" inputmode="numeric"><span class="coin-label">COINS</span></div><div class="wager-presets"><button type="button" data-wager="25">25</button><button type="button" data-wager="50">50</button><button type="button" data-wager="100">100</button><button type="button" data-wager="half">½ balance</button></div></div>
+				<div class="choice-label" id="choice-label">MAKE YOUR CALL</div><div class="choice-buttons" id="choice-buttons"></div>
+			</aside>
+		</div>
+	</dialog>
+
+	<dialog class="activity-dialog" id="activity-dialog" aria-labelledby="activity-title">
+		<header class="activity-header"><button class="activity-exit" id="activity-exit" type="button"><span>←</span> Leave game</button><div class="activity-heading"><span id="activity-kicker">BLACK JACK · ARCADE</span><h2 id="activity-title">Cafe Memory</h2></div><div class="activity-wallet"><span id="activity-mode">ARCADE ENTRY</span><strong><span class="coin-mark">✦</span> <span id="activity-balance">500</span></strong></div></header>
+		<div class="activity-content"><section class="activity-play-area"><p class="activity-instructions" id="activity-instructions"></p><div class="activity-board" id="activity-board"></div><p class="activity-feedback" id="activity-feedback" aria-live="polite"></p></section><aside class="activity-score-rail"><span class="section-kicker" id="activity-score-label">YOUR SCORE</span><strong class="activity-score" id="activity-score">0</strong><div class="activity-progress"><span id="activity-progress-fill"></span></div><span class="activity-progress-label" id="activity-progress-label">Ready</span><div class="activity-reward-preview" id="activity-reward-preview"></div><div id="activity-controls"></div></aside></div>
+	</dialog>
+
+	<dialog class="toast-dialog" id="toast-dialog"><div class="toast-mark" id="toast-mark">✦</div><h2 id="toast-title">A little something</h2><p id="toast-message"></p><button class="primary-button" id="toast-close">Lovely <span>→</span></button></dialog>
+</body>
+</html>

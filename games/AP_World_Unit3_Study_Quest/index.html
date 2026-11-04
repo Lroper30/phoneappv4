@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AP World: Empire Quest</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="features.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Empire Quest home">
+        <span class="brand-mark">⚔</span>
+        <span>EMPIRE <b>QUEST</b><small>AP WORLD HISTORY · UNIT 3</small></span>
+      </a>
+      <div class="top-stats">
+        <div class="stat"><span>⭐ XP</span><b id="xp">0</b></div>
+        <div class="stat"><span>🔥 STREAK</span><b id="streak">0</b></div>
+        <div class="stat"><span>🏆 BEST</span><b id="best">0</b></div>
+      </div>
+    </header>
+
+    <main>
+      <section id="home-screen" class="screen active">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">1450–1750 · LAND-BASED EMPIRES</div>
+            <h1>Build your empire.<br><em>Master Unit 3.</em></h1>
+            <p>Train your history knowledge, defeat the quiz bosses, and unlock the title of <strong>History Legend</strong>.</p>
+            <button class="primary big" id="start-btn">START QUEST <span>→</span></button>
+            <div class="hero-note">Single-player works locally · AI and online rooms need setup</div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="sun"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="castle">🏰</div><div class="flag">⚑</div>
+            <div class="art-label">THE AGE OF<br><b>EMPIRES</b></div>
+          </div>
+        </div>
+
+        <div class="section-heading"><div><span class="eyebrow">CHOOSE YOUR TRAINING</span><h2>Your mission board</h2></div><span class="tag">6 GAME MODES</span></div>
+        <div class="mode-grid">
+          <button class="mode-card" data-mode="campaign"><span class="mode-icon">🗺️</span><span class="mode-name">Empire Campaign</span><span class="mode-desc">Travel through all 7 study topics.</span><span class="mode-link">PLAY CAMPAIGN →</span></button>
+          <button class="mode-card" data-mode="quiz"><span class="mode-icon">⚡</span><span class="mode-name">Quick Battle</span><span class="mode-desc">Answer random questions and earn XP.</span><span class="mode-link">BATTLE →</span></button>
+          <button class="mode-card" data-mode="flashcards"><span class="mode-icon">🃏</span><span class="mode-name">Flashcard Forge</span><span class="mode-desc">Flip cards to lock in key facts.</span><span class="mode-link">STUDY →</span></button>
+          <button class="mode-card" data-mode="timeline"><span class="mode-icon">⌛</span><span class="mode-name">Timeline Rush</span><span class="mode-desc">Put major events in the right order.</span><span class="mode-link">RACE →</span></button>
+          <button class="mode-card" data-mode="match"><span class="mode-icon">🔗</span><span class="mode-name">Match the Terms</span><span class="mode-desc">Connect people, terms, and meanings.</span><span class="mode-link">MATCH →</span></button>
+          <button class="mode-card" data-mode="boss"><span class="mode-icon">👑</span><span class="mode-name">Final Boss</span><span class="mode-desc">A mixed challenge across the whole unit.</span><span class="mode-link">CHALLENGE →</span></button>
+        </div>
+
+        <div class="progress-panel">
+          <div><span class="eyebrow">YOUR PROGRESS</span><h3>Empire knowledge level</h3><p id="rank-text">Recruit · Keep training to rise through the ranks.</p></div>
+          <div class="progress-right"><strong id="progress-xp">0 XP</strong><div class="progress-track"><div id="progress-fill"></div></div><small id="next-rank">100 XP to Scholar</small></div>
+        </div>
+
+        <section class="study-section" aria-labelledby="study-heading">
+          <div class="section-heading"><div><span class="eyebrow">YOUR LIBRARY</span><h2 id="study-heading">Study sets</h2></div><div class="study-actions"><button class="secondary" id="import-set-btn">✨ MAKE FROM A GUIDE</button><button class="primary" id="create-set-btn">＋ CREATE A SET</button></div></div>
+          <p class="section-note">Your original Unit 3 questions stay here. Make your own sets, add questions, or turn a study guide into a practice set.</p>
+          <div id="study-sets" class="study-set-grid"></div>
+        </section>
+
+        <section class="multiplayer-section" aria-labelledby="multiplayer-heading">
+          <div><span class="eyebrow">PLAY TOGETHER</span><h2 id="multiplayer-heading">Multiplayer arena</h2><p class="section-note">Host a live quiz or join a room with a code. Players need the deployed room server URL configured in <code>config.js</code>.</p></div>
+          <div class="room-controls">
+            <label>Your name<input id="player-name" maxlength="20" placeholder="History hero"></label>
+            <label>Study set<select id="room-set"></select></label>
+            <button class="primary" id="host-room">HOST A GAME</button>
+            <label>Room code<input id="join-code" maxlength="6" placeholder="ABC123" autocomplete="off"></label>
+            <button class="secondary" id="join-room">JOIN ROOM</button>
+          </div>
+          <div id="room-status" class="room-status" role="status">No room connected.</div>
+          <div id="room-lobby" class="room-lobby" hidden></div>
+        </section>
+      </section>
+
+      <section id="game-screen" class="screen">
+        <div class="game-top">
+          <button class="back-btn" id="back-home">← HOME</button>
+          <div class="game-title"><span class="eyebrow" id="game-kicker">TRAINING MODE</span><h2 id="game-heading">Quick Battle</h2></div>
+          <div class="game-score"><span>⭐ XP</span><b id="game-xp">0</b></div>
+        </div>
+        <div class="game-progress"><div id="round-progress"></div></div>
+        <div id="game-content"></div>
+      </section>
+
+      <section id="result-screen" class="screen">
+        <div class="result-card">
+          <div class="result-medal" id="result-medal">🏆</div>
+          <div class="eyebrow">MISSION COMPLETE</div>
+          <h2 id="result-title">Well played!</h2>
+          <p id="result-message">You made progress.</p>
+          <div class="result-stats">
+            <div><strong id="result-score">0/0</strong><span>CORRECT</span></div>
+            <div><strong id="result-earned">+0</strong><span>XP EARNED</span></div>
+            <div><strong id="result-accuracy">0%</strong><span>ACCURACY</span></div>
+          </div>
+          <div class="result-actions"><button class="primary" id="play-again">PLAY AGAIN</button><button class="secondary" id="result-home">MISSION BOARD</button></div>
+          <div id="missed-review" class="missed-review"></div>
+        </div>
+      </section>
+    </main>
+    <footer>EMPIRE QUEST <span>·</span> Built for AP World History Unit 3 <span>·</span> Keep learning, keep conquering.</footer>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <dialog id="set-dialog" class="editor-dialog">
+    <form id="set-form">
+      <div class="dialog-heading"><div><span class="eyebrow">YOUR LIBRARY</span><h2>Create a study set</h2></div><button type="button" class="icon-close" data-close-dialog aria-label="Close">×</button></div>
+      <label>Set name<input id="set-name" maxlength="60" required placeholder="e.g. Chapter 4 Review"></label>
+      <label>Description<textarea id="set-description" maxlength="180" rows="2" placeholder="What are you studying?"></textarea></label>
+      <p class="section-note">Create the set first, then add as many questions as you need.</p>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button class="primary" type="submit">CREATE SET</button></div>
+    </form>
+  </dialog>
+  <dialog id="question-dialog" class="editor-dialog">
+    <form id="question-form">
+      <div class="dialog-heading"><div><span class="eyebrow">BUILD YOUR SET</span><h2>Add a question</h2></div><button type="button" class="icon-close" data-close-dialog aria-label="Close">×</button></div>
+      <label>Question<input id="question-prompt" maxlength="240" required placeholder="What do you want to ask?"></label>
+      <label>Correct answer<input id="question-answer" maxlength="180" required></label>
+      <label>Wrong answer 1<input id="question-wrong-1" maxlength="180" required></label>
+      <label>Wrong answer 2<input id="question-wrong-2" maxlength="180" required></label>
+      <label>Wrong answer 3<input id="question-wrong-3" maxlength="180" required></label>
+      <label>Explanation (optional)<textarea id="question-explanation" maxlength="500" rows="2"></textarea></label>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button class="primary" type="submit">SAVE QUESTION</button></div>
+    </form>
+  </dialog>
+  <dialog id="question-list-dialog" class="editor-dialog">
+    <div class="dialog-heading"><div><span class="eyebrow">REVIEW YOUR SET</span><h2 id="question-list-title">Questions</h2></div><button type="button" class="icon-close" data-close-dialog aria-label="Close">×</button></div>
+    <div id="question-list" class="question-list"></div>
+    <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>DONE</button><button type="button" class="primary" id="list-add-question">＋ ADD QUESTION</button></div>
+  </dialog>
+  <dialog id="import-dialog" class="editor-dialog">
+    <form id="import-form">
+      <div class="dialog-heading"><div><span class="eyebrow">AI STUDY SET BUILDER</span><h2>Upload a study guide</h2></div><button type="button" class="icon-close" data-close-dialog aria-label="Close">×</button></div>
+      <p class="section-note">Choose a PDF, Word document, or text file. Its text is sent to Gemini through your Firebase function to make editable multiple-choice questions. Don't upload private or sensitive material.</p>
+      <label>Set name<input id="import-name" maxlength="60" required placeholder="e.g. Biology Midterm"></label>
+      <label>Study guide<input id="guide-file" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" required></label>
+      <label class="consent-label"><input id="upload-consent" type="checkbox" required> I have permission to upload this file and understand its text is sent to Gemini for question generation.</label>
+      <div id="import-status" class="room-status" role="status"></div>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button class="primary" id="generate-set" type="submit">ANALYZE & CREATE SET</button></div>
+    </form>
+  </dialog>
+  <script src="config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+  <script type="module" src="firebase-client.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

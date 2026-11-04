@@ -1,0 +1,1580 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090e1b">
+<title>Chess Arena 3D</title>
+
+<style>
+:root{
+  --bg:#090e1b;
+  --panel:#121b2d;
+  --panel2:#19253b;
+  --line:#ffffff16;
+  --muted:#9aacc9;
+  --text:#f4f7ff;
+  --purple:#8067ff;
+  --cyan:#66d9ff;
+  --gold:#edc978;
+  --green:#75edb1;
+  --danger:#ff8295;
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg)}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,
+    BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(ellipse at 20% -10%,#293c64 0,transparent 48%),
+    radial-gradient(ellipse at 100% 20%,#252044 0,transparent 35%),
+    var(--bg);
+}
+button,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.42;cursor:not-allowed}
+button:focus-visible,select:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:3px;
+}
+.topbar{
+  min-height:82px;
+  padding:15px clamp(16px,4vw,48px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  border-bottom:1px solid var(--line);
+  background:#090e1bd9;
+  backdrop-filter:blur(18px);
+}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-icon{
+  width:45px;height:45px;border-radius:14px;
+  display:grid;place-items:center;
+  font-size:26px;
+  background:linear-gradient(140deg,#8b75ff,#4b46aa);
+  box-shadow:0 7px 24px #6554ef44;
+}
+.brand h1{font-size:17px;letter-spacing:2px;margin:0}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:11px}
+.top-actions{display:flex;align-items:center;gap:9px}
+.pill{
+  padding:9px 12px;border:1px solid var(--line);
+  border-radius:999px;color:#dce6ff;font-size:12px;
+  background:#ffffff06;
+}
+.page{
+  width:min(1450px,96%);
+  margin:25px auto 45px;
+}
+.hero{
+  display:flex;justify-content:space-between;align-items:end;
+  gap:20px;margin:0 0 20px;
+}
+.eyebrow{
+  color:var(--cyan);font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;font-weight:800;
+}
+.hero h2{font-size:clamp(25px,4vw,38px);margin:8px 0 5px}
+.hero p{color:var(--muted);font-size:13px;margin:0;line-height:1.7}
+.rating-box{
+  padding:12px 17px;border:1px solid #edc9783d;
+  border-radius:14px;background:#edc9780b;text-align:right;
+}
+.rating-box span{font-size:10px;color:var(--gold);letter-spacing:1.5px}
+.rating-box strong{display:block;font-size:25px;margin-top:4px}
+.game-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  gap:19px;align-items:start;
+}
+.panel{
+  min-width:0;border:1px solid var(--line);
+  border-radius:19px;
+  background:linear-gradient(145deg,#172239f5,#0e1728f5);
+  box-shadow:0 20px 65px #0002;
+}
+.board-panel{padding:15px}
+.board-top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:2px 2px 14px;
+}
+.player-info{display:flex;align-items:center;gap:10px;min-width:0}
+.avatar{
+  width:38px;height:38px;flex-shrink:0;
+  display:grid;place-items:center;border-radius:12px;
+  font-size:22px;background:#ffffff0b;border:1px solid var(--line);
+}
+.player-name{font-size:12px;font-weight:750}
+.player-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.turn-indicator{
+  width:8px;height:8px;display:inline-block;
+  border-radius:50%;background:var(--green);margin-right:5px;
+}
+.small-btn,.action-btn,.primary-btn{
+  border:1px solid var(--line);border-radius:10px;
+  color:var(--text);background:#ffffff08;
+  padding:10px 12px;font-size:12px;font-weight:700;
+  transition:background .18s,border-color .18s,transform .18s;
+}
+.small-btn:hover,.action-btn:hover{
+  background:#ffffff13;border-color:#ffffff35;
+}
+.primary-btn{
+  border:0;background:linear-gradient(120deg,#8c72ff,#6455db);
+  box-shadow:0 6px 22px #7764f033;
+}
+.primary-btn:hover{background:linear-gradient(120deg,#a18cff,#7867f1)}
+.board-frame{
+  position:relative;overflow:hidden;border-radius:13px;
+  border:1px solid #edc97842;background:#111a2a;
+}
+#board{
+  width:100%;height:clamp(380px,59vw,690px);
+  min-height:380px;overflow:hidden;
+  touch-action:pan-y;
+}
+#board canvas{display:block;width:100%;height:100%}
+.board-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:13px 2px 2px;
+}
+.hint{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.board-tools{display:flex;gap:7px;flex-wrap:wrap;justify-content:end}
+.sidebar{display:grid;gap:14px}
+.side-panel{padding:17px}
+.section-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin:0 0 14px;font-size:13px;
+}
+.section-heading small{color:var(--muted);font-size:10px;font-weight:500}
+.status-box{
+  padding:15px;border-radius:13px;
+  background:linear-gradient(135deg,#8067ff1a,#66d9ff08);
+  border:1px solid #8c79ff35;
+  margin-bottom:16px;
+}
+.status-label{
+  color:var(--cyan);font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;font-weight:800;
+}
+#status{font-size:15px;font-weight:800;margin-top:8px}
+#statusDetail{font-size:11px;color:var(--muted);line-height:1.6;margin-top:5px}
+.field{display:grid;gap:7px;margin:14px 0}
+.field label{font-size:11px;color:#b5c4dd}
+select{
+  width:100%;padding:11px 12px;
+  background:#0d1628;color:var(--text);
+  border:1px solid #ffffff20;border-radius:10px;
+  font-size:12px;
+}
+.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.button-grid button{width:100%}
+.primary-wide{width:100%;margin-top:12px;padding:12px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.stat{
+  padding:11px 5px;border:1px solid var(--line);
+  background:#ffffff04;border-radius:11px;text-align:center;
+}
+.stat strong{display:block;font-size:19px}
+.stat span{display:block;margin-top:5px;font-size:9px;color:var(--muted)}
+.rating-line{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;margin-top:13px;color:var(--muted);
+}
+.rating-line strong{font-size:13px;color:var(--gold)}
+.captured-row{display:grid;gap:7px;margin-top:13px}
+.captured-line{
+  min-height:37px;padding:8px 10px;border-radius:9px;
+  background:#ffffff05;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.captured-label{font-size:10px;color:var(--muted)}
+.captured-pieces{font-size:18px;overflow-wrap:anywhere;line-height:1.5}
+#history{
+  max-height:250px;overflow:auto;padding-right:3px;
+  font-size:12px;color:#d5dff2;
+}
+.history-row{
+  display:grid;grid-template-columns:24px 1fr 1fr;
+  gap:8px;padding:9px 7px;border-bottom:1px solid #ffffff09;
+}
+.history-row:nth-child(even){background:#ffffff04}
+.history-number{color:#7185a7}
+.history-row span:last-child{color:#b7c8e5}
+.empty-history{font-size:11px;color:var(--muted);line-height:1.7}
+.footer{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:18px 3px;color:#7386a7;font-size:10px;
+}
+kbd{
+  padding:2px 5px;border-radius:4px;
+  border:1px solid #ffffff25;background:#ffffff08;font-size:10px;
+}
+#toast{
+  position:fixed;left:50%;bottom:25px;z-index:20;
+  transform:translate(-50%,20px);
+  opacity:0;pointer-events:none;
+  background:#202d45;border:1px solid #ffffff24;
+  box-shadow:0 10px 40px #0007;
+  border-radius:12px;padding:12px 17px;font-size:12px;
+  transition:opacity .2s,transform .2s;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+/* Fullscreen mode */
+#boardPanel:fullscreen{
+  width:100vw;height:100vh;max-width:none;
+  margin:0;padding:15px;border-radius:0;
+  background:#090e1b;overflow:auto;
+  display:flex;flex-direction:column;
+}
+#boardPanel:fullscreen .board-frame{
+  flex:1;min-height:0;display:flex;flex-direction:column;
+}
+#boardPanel:fullscreen #board{
+  flex:1;height:auto;min-height:0;
+}
+#boardPanel:fullscreen .board-bottom{flex-shrink:0}
+#boardPanel:fullscreen .board-top{flex-shrink:0}
+#boardPanel:fullscreen #board canvas{width:100%;height:100%}
+#boardPanel.is-fullscreen{
+  width:100vw;height:100vh;border-radius:0;
+}
+@media(min-width:1000px){
+  #boardPanel:fullscreen #board{min-height:0}
+}
+@media(max-width:950px){
+  .game-layout{grid-template-columns:minmax(0,1fr) 265px;gap:12px}
+  #board{height:clamp(350px,57vw,590px)}
+  .board-panel{padding:11px}
+  .side-panel{padding:13px}
+}
+@media(max-width:720px){
+  .topbar{padding:13px 4%;min-height:70px}
+  .brand h1{font-size:14px;letter-spacing:1px}
+  .brand p{font-size:10px}
+  .top-actions .pill{display:none}
+  .page{width:94%;margin:19px auto 30px}
+  .hero{align-items:center}
+  .hero h2{font-size:26px}
+  .hero p{font-size:11px}
+  .rating-box{padding:9px 11px}
+  .rating-box strong{font-size:20px}
+  .game-layout{grid-template-columns:1fr}
+  #board{height:min(112vw,580px);min-height:330px}
+  .sidebar{grid-template-columns:1fr 1fr;align-items:start}
+  .sidebar .settings-panel{grid-column:1/-1}
+  .sidebar .history-panel{grid-column:1/-1}
+  #history{max-height:210px}
+  .board-bottom{align-items:flex-start}
+  .hint{max-width:55%}
+}
+@media(max-width:430px){
+  .sidebar{grid-template-columns:1fr}
+  .sidebar .settings-panel,.sidebar .history-panel{grid-column:auto}
+  .board-top .player-sub{font-size:9px}
+  .small-btn{padding:9px;font-size:11px}
+  #board{min-height:310px}
+  .board-bottom{flex-direction:column}
+  .hint{max-width:100%}
+  .board-tools{justify-content:start}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important}
+}
+/* 3D chess piece hover name */
+#pieceHoverLabel {
+  position: fixed;
+  display: none;
+  z-index: 9999;
+  pointer-events: none;
+
+  padding: 9px 14px;
+  border-radius: 9px;
+
+  color: #ffffff;
+  background: linear-gradient(145deg, #202d46, #0c1425);
+
+  border: 1px solid #edc978;
+  box-shadow:
+    0 5px 20px rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(237, 201, 120, 0.2);
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  transform: translate(-50%, -125%);
+  animation: pieceLabelIn 0.14s ease-out;
+}
+
+#pieceHoverLabel::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 6px solid transparent;
+  border-top-color: #edc978;
+}
+
+@keyframes pieceLabelIn {
+  from {
+    opacity: 0;
+    margin-top: 4px;
+  }
+
+  to {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
+#pieceHoverLabel.visible {
+  display: block;
+}
+
+#pieceHoverName {
+  display: block;
+}
+/* ========================================
+   CHESS ARENA — CHECKMATE CINEMATIC
+   ======================================== */
+
+#checkmate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+  background: radial-gradient(
+    circle at center,
+    rgba(36, 32, 67, 0.88),
+    rgba(3, 5, 14, 0.97)
+  );
+  color: white;
+  font-family: Arial, sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#checkmate-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#checkmate-overlay .checkmate-crown {
+  font-size: 76px;
+  filter: drop-shadow(0 0 20px #ffd36a);
+  animation: crownEntrance 1s cubic-bezier(.2, 1.5, .5, 1) both;
+}
+
+#checkmate-overlay h1 {
+  margin: 0;
+  color: #ffdc83;
+  font-size: clamp(38px, 8vw, 82px);
+  font-weight: 1000;
+  letter-spacing: 8px;
+  text-align: center;
+  text-shadow:
+    0 0 10px rgba(255, 203, 91, .9),
+    0 0 35px rgba(255, 153, 0, .6);
+  animation: titleEntrance .8s ease-out both;
+}
+
+#checkmate-overlay p {
+  margin: 0;
+  color: #e0e6f7;
+  font-size: 17px;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+#checkmate-overlay button {
+  margin-top: 14px;
+  padding: 14px 28px;
+  border: 1px solid #ffe4a1;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffe5a0, #c38a2c);
+  color: #151321;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 5px 25px #e5ac4760;
+  transition: transform .2s ease, filter .2s ease;
+}
+
+#checkmate-overlay button:hover {
+  transform: translateY(-3px) scale(1.04);
+  filter: brightness(1.12);
+}
+
+#checkmate-overlay .checkmate-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.checkmate-particle {
+  position: absolute;
+  top: -20px;
+  width: 7px;
+  height: 12px;
+  border-radius: 2px;
+  background: #ffdb83;
+  animation: particleFall 3s linear forwards;
+}
+
+@keyframes crownEntrance {
+  from { transform: translateY(40px) scale(.3) rotate(-20deg); opacity: 0; }
+  to { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes titleEntrance {
+  from { transform: scale(1.4); opacity: 0; filter: blur(8px); }
+  to { transform: scale(1); opacity: 1; filter: blur(0); }
+}
+
+@keyframes particleFall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #checkmate-overlay *,
+  .checkmate-particle {
+    animation-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">♞</div>
+    <div>
+      <h1>CHESS ARENA <span style="color:#9c89ff">3D</span></h1>
+      <p>YOUR NEXT MOVE DEFINES YOU</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <span class="pill">● LOCAL GAME</span>
+    <button class="small-btn" id="resetView" type="button">Reset Camera</button>
+  </div>
+</header>
+
+<main class="page">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">The grandmaster challenge</div>
+      <h2>Enter the arena.</h2>
+      <p>Master the board. Outsmart the machine. Make every move count.</p>
+    </div>
+    <div class="rating-box">
+      <span>YOUR RATING</span>
+      <strong id="rating">800</strong>
+    </div>
+  </div>
+
+  <div class="game-layout">
+    <section class="panel board-panel" id="boardPanel">
+      <div class="board-top">
+        <div class="player-info">
+          <div class="avatar" id="humanAvatar">♙</div>
+          <div>
+            <div class="player-name">You <span class="turn-indicator" id="turnDot"></span></div>
+            <div class="player-sub" id="humanSubtitle">White pieces</div>
+          </div>
+        </div>
+        <button class="small-btn" id="fullscreenBoard" type="button">⛶ Fullscreen</button>
+        <div class="player-info">
+          <div>
+            <div class="player-name" style="text-align:right">Arena AI</div>
+            <div class="player-sub" id="botSubtitle" style="text-align:right">Medium difficulty</div>
+          </div>
+          <div class="avatar">🤖</div>
+        </div>
+      </div>
+
+      <div class="board-frame">
+        <div id="board" aria-label="Interactive 3D chessboard"></div>
+      </div>
+
+      <div class="board-bottom">
+        <p class="hint">
+          Select a piece, then choose a highlighted square.<br>
+          Drag to rotate · Scroll to zoom · Legal moves only
+        </p>
+        <div class="board-tools">
+          <button class="small-btn" id="flip" type="button">⇄ Flip</button>
+          <button class="small-btn" id="undo" type="button">↶ Undo</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <section class="panel side-panel settings-panel">
+        <h3 class="section-heading">Match control <small>GAME SETTINGS</small></h3>
+        <div class="status-box" aria-live="polite">
+          <div class="status-label">Match status</div>
+          <div id="status">Preparing arena...</div>
+          <div id="statusDetail">Loading your 3D chessboard.</div>
+        </div>
+        
+<div class="field">
+  <label for="mode">GAME MODE</label>
+  <select id="mode">
+    <option value="ai">Play Against AI</option>
+    <option value="local">2 Players — Same Computer</option>
+  </select>
+</div>
+        <div class="field">
+          <label for="side">PLAY AS</label>
+          <select id="side">
+            <option value="w">White pieces</option>
+            <option value="b">Black pieces</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="difficulty">AI DIFFICULTY</label>
+          <select id="difficulty">
+            <option value="1">Easy · Random moves</option>
+            <option value="2" selected>Medium · Tactical basics</option>
+            <option value="3">Hard · Deeper search</option>
+            <option value="4">Expert · Deepest search</option>
+          </select>
+        </div>
+        <button class="primary-btn primary-wide" id="newGame" type="button">✦ New Match</button>
+        <div class="button-grid">
+          <button class="action-btn" id="backToMenu" type="button">Reset Match</button>
+          <button class="action-btn" id="flipSide" type="button">Change Side</button>
+        </div>
+      </section>
+
+      <section class="panel side-panel">
+        <h3 class="section-heading">Career stats <small>ALL MATCHES</small></h3>
+        <div class="stats-grid">
+          <div class="stat"><strong id="winsStat">0</strong><span>WINS</span></div>
+          <div class="stat"><strong id="lossesStat">0</strong><span>LOSSES</span></div>
+          <div class="stat"><strong id="drawsStat">0</strong><span>DRAWS</span></div>
+        </div>
+        <div class="rating-line">
+          <span>Current match</span>
+          <strong id="moveCount">Move 1</strong>
+        </div>
+        <div class="captured-row">
+          <div class="captured-line">
+            <span class="captured-label">YOU CAPTURED</span>
+            <span class="captured-pieces" id="capturedYou">—</span>
+          </div>
+          <div class="captured-line">
+            <span class="captured-label">AI CAPTURED</span>
+            <span class="captured-pieces" id="capturedBot">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel side-panel history-panel">
+        <h3 class="section-heading">Move history <small id="historyCount">0 PLIES</small></h3>
+        <div id="history"><div class="empty-history">Your match is ready. Make the first move.</div></div>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <span>CHESS ARENA 3D · BUILT FOR STRATEGY</span>
+    <span>Progress saved on this device</span>
+  </footer>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div id="pieceHoverLabel" aria-hidden="true">
+  <span id="pieceHoverName">KING</span>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js';
+import {Chess} from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
+
+const $ = selector => document.querySelector(selector);
+const boardElement = $('#board');
+const boardPanel = $('#boardPanel');
+const statusElement = $('#status');
+const detailElement = $('#statusDetail');
+const historyElement = $('#history');
+
+const FILES = 'abcdefgh';
+const VALUES = {p:100,n:320,b:335,r:500,q:900,k:20000};
+const GLYPHS = {
+  w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},
+  b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}
+};
+
+let game = new Chess();
+let selectedSquare = null;
+let legalTargets = [];
+let flipped = false;
+let thinking = false;
+let gameToken = 0;
+let lastMove = null;
+let animations = [];
+let outcomeRecorded = false;
+let toastTimer;
+let destroyed = false;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#111a2b');
+
+const camera = new THREE.PerspectiveCamera(38,1,.1,100);
+camera.position.set(8,10,11);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias:true,
+  powerPreference:'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,1.5));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.domElement.style.display = 'block';
+boardElement.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera,renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = .075;
+controls.target.set(0,0,0);
+controls.minDistance = 7;
+controls.maxDistance = 17;
+controls.maxPolarAngle = Math.PI/2.05;
+
+scene.add(new THREE.HemisphereLight(0xd7e5ff,0x463326,2));
+
+const keyLight = new THREE.DirectionalLight(0xffffff,3);
+keyLight.position.set(5,10,6);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024,1024);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x819dff,1.2);
+fillLight.position.set(-6,5,-4);
+scene.add(fillLight);
+
+const mats = {
+  white:new THREE.MeshStandardMaterial({color:'#f5ead4',roughness:.3,metalness:.08}),
+  black:new THREE.MeshStandardMaterial({color:'#252c40',roughness:.26,metalness:.2}),
+  light:new THREE.MeshStandardMaterial({color:'#e9d6b5',roughness:.66}),
+  dark:new THREE.MeshStandardMaterial({color:'#536b87',roughness:.62}),
+  gold:new THREE.MeshStandardMaterial({color:'#e8bd68',metalness:.58,roughness:.25}),
+  selected:new THREE.MeshBasicMaterial({color:'#77ffb5',transparent:true,opacity:.57,side:THREE.DoubleSide,depthWrite:false}),
+  target:new THREE.MeshBasicMaterial({color:'#73baff',transparent:true,opacity:.7,side:THREE.DoubleSide,depthWrite:false}),
+  last:new THREE.MeshBasicMaterial({color:'#f6d46b',transparent:true,opacity:.28,side:THREE.DoubleSide,depthWrite:false})
+};
+
+const boardGroup = new THREE.Group();
+const pieceGroup = new THREE.Group();
+const markerGroup = new THREE.Group();
+scene.add(boardGroup,pieceGroup,markerGroup);
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const pieceObjects = new Map();
+// ==========================================
+// CHESS ARENA 3D — HOVER PIECE NAMES
+// ==========================================
+
+const pieceHoverLabel = document.createElement("div");
+pieceHoverLabel.id = "pieceHoverLabel";
+pieceHoverLabel.setAttribute("aria-hidden", "true");
+
+Object.assign(pieceHoverLabel.style, {
+  position: "fixed",
+  display: "none",
+  zIndex: "99999",
+  pointerEvents: "none",
+  padding: "9px 14px",
+  borderRadius: "9px",
+  color: "#ffffff",
+  background: "linear-gradient(145deg, #202d46, #0c1425)",
+  border: "1px solid #edc978",
+  boxShadow: "0 5px 20px rgba(0,0,0,.45)",
+  fontFamily: "Arial, sans-serif",
+  fontSize: "12px",
+  fontWeight: "900",
+  letterSpacing: "2px",
+  whiteSpace: "nowrap",
+  textTransform: "uppercase",
+  transform: "translate(-50%, -130%)"
+});
+
+document.body.appendChild(pieceHoverLabel);
+
+const hoverPieceNames = {
+  k: "KING",
+  q: "QUEEN",
+  r: "ROOK",
+  b: "BISHOP",
+  n: "KNIGHT",
+  p: "PAWN"
+};
+
+let currentHoveredPiece = null;
+
+function hideChessPieceName() {
+  pieceHoverLabel.style.display = "none";
+  currentHoveredPiece = null;
+}
+
+function showChessPieceName(piece, event) {
+  const type = piece.userData.type;
+  const name = hoverPieceNames[type];
+
+  if (!name) {
+    hideChessPieceName();
+    return;
+  }
+
+  pieceHoverLabel.textContent = name;
+
+  // Add the piece color to the label.
+  pieceHoverLabel.style.borderColor =
+    piece.userData.color === "w" ? "#edc978" : "#9c89ff";
+
+  pieceHoverLabel.style.left = event.clientX + "px";
+  pieceHoverLabel.style.top = event.clientY + "px";
+  pieceHoverLabel.style.display = "block";
+
+  currentHoveredPiece = piece;
+}
+
+renderer.domElement.addEventListener("pointermove", event => {
+  const rect = renderer.domElement.getBoundingClientRect();
+
+  if (!rect.width || !rect.height) {
+    hideChessPieceName();
+    return;
+  }
+
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(pointer, camera);
+
+  const hits = raycaster.intersectObjects(
+    pieceGroup.children,
+    true
+  );
+
+  let foundPiece = null;
+
+  for (const hit of hits) {
+    let object = hit.object;
+
+    while (object && !object.userData.pieceRoot) {
+      object = object.parent;
+    }
+
+    if (object && object.userData.pieceRoot) {
+      foundPiece = object.userData.pieceRoot;
+      break;
+    }
+  }
+
+  if (foundPiece) {
+    showChessPieceName(foundPiece, event);
+    renderer.domElement.style.cursor = "pointer";
+  } else {
+    hideChessPieceName();
+    renderer.domElement.style.cursor = "default";
+  }
+});
+
+renderer.domElement.addEventListener(
+  "pointerleave",
+  hideChessPieceName
+);
+
+renderer.domElement.addEventListener(
+  "pointerdown",
+  hideChessPieceName
+);
+
+window.addEventListener("blur", hideChessPieceName);
+
+console.log("Chess Arena piece hover names loaded!");
+
+function posOf(square){
+  const f = FILES.indexOf(square[0]);
+  const r = Number(square[1])-1;
+  const d = flipped ? -1 : 1;
+  return new THREE.Vector3((f-3.5)*d,0,(3.5-r)*d);
+}
+
+function box(w,h,d,mat,x,y,z,parent){
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+  mesh.position.set(x,y,z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+function cylinder(rt,rb,h,mat,x,y,z,parent,n=24){
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,n),mat);
+  mesh.position.set(x,y,z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+function sphere(r,mat,x,y,z,parent){
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(r,18,12),mat);
+  mesh.position.set(x,y,z);
+  mesh.castShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+function clearGroup(group){
+  while(group.children.length){
+    const child = group.children[0];
+    group.remove(child);
+  }
+}
+
+function buildBoard(){
+  clearGroup(boardGroup);
+
+  box(8.65,.38,8.65,mats.black,0,-.25,0,boardGroup);
+  box(8.38,.14,8.38,mats.gold,0,-.06,0,boardGroup);
+  box(8.15,.12,8.15,mats.dark,0,.01,0,boardGroup);
+
+  for(let rank=1;rank<=8;rank++){
+    for(let file=0;file<8;file++){
+      const square=FILES[file]+rank;
+      const p=posOf(square);
+      const mat=(file+rank)%2===0?mats.light:mats.dark;
+      const tile=box(.99,.1,.99,mat,p.x,.12,p.z,boardGroup);
+      tile.userData.square=square;
+    }
+  }
+}
+
+function createPiece(type,color,square){
+  const group=new THREE.Group();
+  const mat=color==='w'?mats.white:mats.black;
+  const trim=mats.gold;
+  const c=(a,b,h,m,x,y,z)=>cylinder(a,b,h,m,x,y,z,group);
+
+  c(.34,.32,.1,trim,0,.12,0);
+  c(.28,.25,.12,mat,0,.22,0);
+  c(.19,.24,.3,mat,0,.4,0);
+  c(.25,.19,.08,trim,0,.59,0);
+
+  if(type==='p'){
+    c(.14,.18,.25,mat,0,.75,0);
+    sphere(.17,mat,0,.98,0,group);
+  }
+
+  if(type==='r'){
+    c(.23,.22,.27,mat,0,.76,0);
+    c(.27,.25,.1,trim,0,.93,0);
+    for(let i=0;i<4;i++){
+      box(.1,.15,.1,mat,(i%2)*.34-.17,1.05,Math.floor(i/2)*.34-.17,group);
+    }
+  }
+
+  if(type==='n'){
+    c(.15,.2,.26,mat,0,.76,0);
+    const head=box(.24,.43,.19,mat,0,.99,-.05,group);
+    head.rotation.z=-.22;
+    const muzzle=box(.19,.12,.27,mat,0,1.06,.12,group);
+    muzzle.rotation.x=-.15;
+    sphere(.035,trim,.08,1.08,.04,group);
+  }
+
+  if(type==='b'){
+    c(.15,.21,.34,mat,0,.78,0);
+    sphere(.19,mat,0,1.03,0,group);
+    const cone=new THREE.Mesh(new THREE.ConeGeometry(.1,.3,16),trim);
+    cone.position.y=1.25;
+    group.add(cone);
+  }
+
+  if(type==='q'){
+    c(.18,.24,.43,mat,0,.81,0);
+    c(.26,.19,.08,trim,0,1.04,0);
+    sphere(.13,mat,0,1.19,0,group);
+    for(let i=0;i<5;i++){
+      const a=i*Math.PI*2/5;
+      sphere(.065,trim,Math.cos(a)*.23,1.12,Math.sin(a)*.23,group);
+    }
+  }
+
+  if(type==='k'){
+    c(.17,.24,.48,mat,0,.84,0);
+    c(.25,.18,.08,trim,0,1.11,0);
+    sphere(.14,mat,0,1.26,0,group);
+    box(.09,.36,.09,trim,0,1.52,0,group);
+    box(.27,.09,.09,trim,0,1.54,0,group);
+  }
+
+  const p=posOf(square);
+  group.position.set(p.x,.17,p.z);
+  group.userData={square,color,type};
+  group.traverse(obj=>{
+    if(obj.isMesh)obj.userData.pieceRoot=group;
+  });
+  pieceGroup.add(group);
+  pieceObjects.set(square,group);
+  return group;
+}
+
+function rebuildPieces(){
+  const oldPositions=new Map();
+  for(const [square,group] of pieceObjects){
+    oldPositions.set(square,group.position.clone());
+  }
+
+  clearGroup(pieceGroup);
+  pieceObjects.clear();
+
+  const board=game.board();
+  const nextAnimations=[];
+
+  for(let r=0;r<8;r++){
+    for(let f=0;f<8;f++){
+      const p=board[r][f];
+      if(!p)continue;
+
+      const square=FILES[f]+(8-r);
+      const group=createPiece(p.type,p.color,square);
+      const old=oldPositions.get(square);
+
+      if(old&&old.distanceTo(group.position)>.1){
+        const target=group.position.clone();
+        group.position.copy(old);
+        nextAnimations.push({
+          group,from:old,to:target,
+          start:performance.now(),duration:230
+        });
+      }else if(lastMove&&lastMove.to===square){
+        group.scale.setScalar(.94);
+        nextAnimations.push({
+          group,fromScale:.94,toScale:1,
+          start:performance.now(),duration:190
+        });
+      }
+    }
+  }
+
+  animations=nextAnimations;
+}
+
+function updateAnimations(now){
+  animations=animations.filter(a=>{
+    const t=Math.min(1,(now-a.start)/a.duration);
+    const e=1-Math.pow(1-t,3);
+
+    if(a.from&&a.to){
+      a.group.position.lerpVectors(a.from,a.to,e);
+    }
+    if(a.fromScale!==undefined){
+      a.group.scale.setScalar(a.fromScale+(a.toScale-a.fromScale)*e);
+    }
+    return t<1;
+  });
+}
+
+function ring(square,material,inner,outer){
+  const p=posOf(square);
+  const mesh=new THREE.Mesh(
+    new THREE.RingGeometry(inner,outer,32),material
+  );
+  mesh.rotation.x=-Math.PI/2;
+  mesh.position.set(p.x,.19,p.z);
+  markerGroup.add(mesh);
+}
+
+function showMarkers(){
+  clearGroup(markerGroup);
+
+  if(lastMove){
+    ring(lastMove.from,mats.last,.2,.49);
+    ring(lastMove.to,mats.last,.2,.49);
+  }
+  if(selectedSquare)ring(selectedSquare,mats.selected,.28,.43);
+  for(const square of legalTargets)ring(square,mats.target,.12,.23);
+}
+
+function humanColor(){return $('#side').value}
+
+function onSquareClick(square){
+  if(thinking||game.isGameOver()||game.turn()!==humanColor())return;
+
+  const piece=game.get(square);
+
+  if(selectedSquare&&legalTargets.includes(square)){
+    try{
+      const move=game.move({
+        from:selectedSquare,to:square,promotion:'q'
+      });
+      lastMove={from:move.from,to:move.to};
+      selectedSquare=null;
+      legalTargets=[];
+      refresh();
+      if(!game.isGameOver())botTurn();
+    }catch(error){
+      console.warn(error);
+      showToast('That move is not legal.');
+    }
+    return;
+  }
+
+  if(piece&&piece.color===game.turn()){
+    selectedSquare=square;
+    legalTargets=game.moves({square,verbose:true}).map(m=>m.to);
+  }else{
+    selectedSquare=null;
+    legalTargets=[];
+  }
+  showMarkers();
+}
+
+renderer.domElement.addEventListener('pointerdown',event=>{
+  const rect=renderer.domElement.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
+
+  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;
+  pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
+  raycaster.setFromCamera(pointer,camera);
+
+  const hits=raycaster.intersectObjects(
+    [...pieceGroup.children,...boardGroup.children],true
+  );
+  if(!hits.length)return;
+
+  let obj=hits[0].object;
+  while(obj&&!obj.userData.square&&!obj.userData.pieceRoot){
+    obj=obj.parent;
+  }
+  if(!obj)return;
+
+  const root=obj.userData.pieceRoot;
+  const square=root?root.userData.square:obj.userData.square;
+  if(square)onSquareClick(square);
+});
+
+// ---------------- COMPUTER OPPONENT ----------------
+
+function evaluate(chess){
+  if(chess.isCheckmate())return chess.turn()==='w'?-100000:100000;
+  if(chess.isDraw())return 0;
+
+  let score=0;
+  const board=chess.board();
+  let whiteBishops=0,blackBishops=0;
+
+  for(let r=0;r<8;r++){
+    for(let f=0;f<8;f++){
+      const p=board[r][f];
+      if(!p)continue;
+
+      const center=3.5-(Math.abs(3.5-f)+Math.abs(3.5-r))/2;
+      let positional=center*(
+        p.type==='n'?13:p.type==='b'?9:p.type==='q'?3:1
+      );
+
+      if(p.type==='p'){
+        positional+=(p.color==='w'?6-r:r-1)*8;
+      }
+
+      if(p.type==='b'){
+        if(p.color==='w')whiteBishops++;
+        else blackBishops++;
+      }
+
+      if(p.type==='r'){
+        let ownPawn=false,enemyPawn=false;
+        for(let rr=0;rr<8;rr++){
+          const other=board[rr][f];
+          if(other&&other.type==='p'){
+            if(other.color===p.color)ownPawn=true;
+            else enemyPawn=true;
+          }
+        }
+        if(!ownPawn)positional+=enemyPawn?12:22;
+      }
+
+      if(p.type==='k'){
+        const material=board.flat()
+          .filter(x=>x&&x.type!=='k')
+          .reduce((sum,x)=>sum+VALUES[x.type],0);
+        if(material<2600)positional+=center*8;
+        else positional-=center*5;
+      }
+
+      const total=VALUES[p.type]+positional;
+      score+=p.color==='w'?total:-total;
+    }
+  }
+
+  if(whiteBishops>=2)score+=28;
+  if(blackBishops>=2)score-=28;
+  return score;
+}
+
+function orderedMoves(chess){
+  return chess.moves({verbose:true}).sort((a,b)=>{
+    const av=(a.captured?VALUES[a.captured]:0)+(a.promotion?VALUES[a.promotion]:0);
+    const bv=(b.captured?VALUES[b.captured]:0)+(b.promotion?VALUES[b.promotion]:0);
+    return bv-av;
+  });
+}
+
+function minimax(chess,depth,alpha,beta,maximizing){
+  if(depth===0||chess.isGameOver())return evaluate(chess);
+
+  const moves=orderedMoves(chess);
+  if(maximizing){
+    let best=-Infinity;
+    for(const move of moves){
+      chess.move(move);
+      const value=minimax(chess,depth-1,alpha,beta,false);
+      chess.undo();
+      best=Math.max(best,value);
+      alpha=Math.max(alpha,best);
+      if(beta<=alpha)break;
+    }
+    return best;
+  }
+
+  let best=Infinity;
+  for(const move of moves){
+    chess.move(move);
+    const value=minimax(chess,depth-1,alpha,beta,true);
+    chess.undo();
+    best=Math.min(best,value);
+    beta=Math.min(beta,best);
+    if(beta<=alpha)break;
+  }
+  return best;
+}
+
+function chooseBotMove(){
+  const level=Number($('#difficulty').value);
+  const moves=orderedMoves(game);
+  if(!moves.length)return null;
+
+  if(level===1){
+    return moves[Math.floor(Math.random()*moves.length)];
+  }
+
+  // Expert searches deeper; this is CPU-intensive on some devices.
+  const depth=level===2?1:level===3?2:3;
+  const white=game.turn()==='w';
+  let best=white?-Infinity:Infinity;
+  let choices=[];
+
+  for(const move of moves){
+    game.move(move);
+    const score=minimax(game,depth-1,-Infinity,Infinity,!white);
+    game.undo();
+
+    if(white?score>best:score<best){
+      best=score;
+      choices=[move];
+    }else if(score===best){
+      choices.push(move);
+    }
+  }
+  return choices[Math.floor(Math.random()*choices.length)];
+}
+
+function botTurn(){
+  if(game.isGameOver()||game.turn()===humanColor())return;
+
+  thinking=true;
+  refresh();
+  const token=gameToken;
+
+  setTimeout(()=>{
+    if(token!==gameToken)return;
+
+    try{
+      const move=chooseBotMove();
+      if(move&&token===gameToken){
+        const played=game.move(move);
+        lastMove={from:played.from,to:played.to};
+      }
+    }catch(error){
+      console.error(error);
+      showToast('The AI encountered an error. Start a new match.');
+    }finally{
+      if(token===gameToken){
+        thinking=false;
+        refresh();
+      }
+    }
+  },60);
+}
+
+// ---------------- SAVED CAREER STATS ----------------
+
+function readStats(){
+  try{
+    const data=JSON.parse(localStorage.getItem('chessArenaStats')||'{}');
+    return {
+      wins:Number(data.wins)||0,
+      losses:Number(data.losses)||0,
+      draws:Number(data.draws)||0,
+      rating:Number(data.rating)||800
+    };
+  }catch{
+    return {wins:0,losses:0,draws:0,rating:800};
+  }
+}
+
+function writeStats(stats){
+  try{
+    localStorage.setItem('chessArenaStats',JSON.stringify(stats));
+  }catch(error){
+    console.warn('Could not save stats.',error);
+  }
+}
+
+function updateStats(){
+  const stats=readStats();
+  $('#winsStat').textContent=stats.wins;
+  $('#lossesStat').textContent=stats.losses;
+  $('#drawsStat').textContent=stats.draws;
+  $('#rating').textContent=stats.rating;
+}
+
+function recordOutcome(){
+  if(outcomeRecorded||!game.isGameOver())return;
+  outcomeRecorded=true;
+  const stats=readStats();
+
+  if(game.isDraw()){
+    stats.draws++;
+    stats.rating=Math.min(3000,stats.rating+4);
+  }else{
+    const winner=game.turn()==='w'?'b':'w';
+    if(winner===humanColor()){
+      stats.wins++;
+      stats.rating=Math.min(3000,stats.rating+24);
+    }else{
+      stats.losses++;
+      stats.rating=Math.max(100,stats.rating-18);
+    }
+  }
+
+  writeStats(stats);
+  updateStats();
+}
+
+function capturedPieces(color){
+  return game.history({verbose:true})
+    .filter(move=>move.captured&&move.color===color)
+    .map(move=>GLYPHS[color==='w'?'b':'w'][move.captured])
+    .join(' ')||'—';
+}
+
+function refresh(){
+  rebuildPieces();
+  showMarkers();
+
+  const history=game.history();
+  historyElement.replaceChildren();
+
+  if(!history.length){
+    const empty=document.createElement('div');
+    empty.className='empty-history';
+    empty.textContent='No moves yet. Make your opening move.';
+    historyElement.appendChild(empty);
+  }else{
+    for(let i=0;i<history.length;i+=2){
+      const row=document.createElement('div');
+      row.className='history-row';
+
+      const number=document.createElement('span');
+      number.className='history-number';
+      number.textContent=`${Math.floor(i/2)+1}.`;
+
+      const white=document.createElement('span');
+      white.textContent=history[i]||'';
+
+      const black=document.createElement('span');
+      black.textContent=history[i+1]||'';
+
+      row.append(number,white,black);
+      historyElement.appendChild(row);
+    }
+  }
+
+  $('#historyCount').textContent=`${history.length} PLIES`;
+  $('#moveCount').textContent=`Move ${Math.ceil(history.length/2)+1}`;
+  $('#capturedYou').textContent=capturedPieces(humanColor());
+  $('#capturedBot').textContent=capturedPieces(humanColor()==='w'?'b':'w');
+
+  $('#humanAvatar').textContent=humanColor()==='w'?'♙':'♟';
+  $('#humanSubtitle').textContent=humanColor()==='w'?'White pieces':'Black pieces';
+  $('#botSubtitle').textContent=$('#difficulty').selectedOptions[0].textContent;
+  $('#turnDot').style.visibility=game.turn()===humanColor()?'visible':'hidden';
+  $('#undo').disabled=history.length===0||thinking;
+
+  const turn=game.turn()==='w'?'White':'Black';
+
+  if(game.isCheckmate()){
+    statusElement.textContent='Checkmate!';
+    detailElement.textContent=`${turn==='White'?'Black':'White'} wins. Start a new match to play again.`;
+  }else if(game.isStalemate()){
+    statusElement.textContent='Stalemate';
+    detailElement.textContent='Neither player has a legal move. The game is a draw.';
+  }else if(game.isDraw()){
+    statusElement.textContent='Draw game';
+    detailElement.textContent='The game has ended in a draw.';
+  }else if(thinking){
+    statusElement.textContent='AI is thinking…';
+    detailElement.textContent='Calculating a response. Hang tight.';
+  }else if(game.isCheck()){
+    statusElement.textContent=`${turn} is in check!`;
+    detailElement.textContent=game.turn()===humanColor()?'Find a legal move to escape check.':'The opponent must escape check.';
+  }else{
+    statusElement.textContent=`${turn} to move`;
+    detailElement.textContent=game.turn()===humanColor()?'Your move. Select a piece on the board.':'Waiting for the opponent.';
+  }
+
+  recordOutcome();
+}
+
+function startGame(){
+  gameToken++;
+  thinking=false;
+  game.reset();
+  selectedSquare=null;
+  legalTargets=[];
+  lastMove=null;
+  outcomeRecorded=false;
+  buildBoard();
+  refresh();
+
+  if(game.turn()!==humanColor())botTurn();
+}
+
+// ---------------- BUTTONS ----------------
+
+$('#newGame').addEventListener('click',startGame);
+$('#backToMenu').addEventListener('click',startGame);
+$('#side').addEventListener('change',startGame);
+
+$('#difficulty').addEventListener('change',()=>{
+  $('#botSubtitle').textContent=$('#difficulty').selectedOptions[0].textContent;
+});
+
+$('#flip').addEventListener('click',()=>{
+  flipped=!flipped;
+  buildBoard();
+  rebuildPieces();
+  showMarkers();
+});
+
+$('#flipSide').addEventListener('click',()=>{
+  $('#side').value=humanColor()==='w'?'b':'w';
+  startGame();
+});
+
+$('#undo').addEventListener('click',()=>{
+  if(thinking)return;
+  const count=game.history().length;
+  if(!count)return;
+
+  game.undo();
+
+  // Undo the AI reply too, if there is one.
+  if(game.history().length&&game.turn()!==humanColor()){
+    game.undo();
+  }
+
+  const history=game.history({verbose:true});
+  lastMove=history.length
+    ?{from:history[history.length-1].from,to:history[history.length-1].to}
+    :null;
+
+  selectedSquare=null;
+  legalTargets=[];
+  outcomeRecorded=false;
+  refresh();
+});
+
+$('#resetView').addEventListener('click',()=>{
+  camera.position.set(flipped?-8:8,10,flipped?-11:11);
+  controls.target.set(0,0,0);
+  controls.update();
+  showToast('Camera view reset');
+});
+
+// ---------------- REAL FULLSCREEN ----------------
+
+const fullscreenButton=$('#fullscreenBoard');
+
+fullscreenButton.addEventListener('click',async()=>{
+  try{
+    if(document.fullscreenElement){
+      await document.exitFullscreen();
+    }else if(boardPanel.requestFullscreen){
+      await boardPanel.requestFullscreen();
+    }else{
+      showToast('Fullscreen is not supported by this browser.');
+    }
+  }catch(error){
+    console.error('Fullscreen error:',error);
+    showToast('Fullscreen was blocked by the browser.');
+  }
+});
+
+document.addEventListener('fullscreenchange',()=>{
+  const active=document.fullscreenElement===boardPanel;
+  fullscreenButton.textContent=active?'✕ Exit Fullscreen':'⛶ Fullscreen';
+  boardPanel.classList.toggle('is-fullscreen',active);
+
+  // Let the browser lay out the fullscreen panel before resizing WebGL.
+  requestAnimationFrame(()=>{
+    resize();
+    controls.update();
+  });
+});
+
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&document.fullscreenElement){
+    // The browser exits fullscreen automatically; this keeps the layout synced.
+    requestAnimationFrame(resize);
+  }
+});
+
+function resize(){
+  const width=boardElement.clientWidth;
+  const height=boardElement.clientHeight;
+  if(!width||!height)return;
+
+  camera.aspect=width/height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width,height,false);
+}
+
+const resizeObserver=new ResizeObserver(resize);
+resizeObserver.observe(boardElement);
+window.addEventListener('resize',resize);
+
+function showToast(message){
+  const toast=$('#toast');
+  toast.textContent=message;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),2300);
+}
+
+// ---------------- RENDER LOOP ----------------
+
+function animate(now){
+  if(destroyed)return;
+  requestAnimationFrame(animate);
+  updateAnimations(now||performance.now());
+  controls.update();
+  renderer.render(scene,camera);
+}
+
+updateStats();
+buildBoard();
+refresh();
+resize();
+animate(performance.now());
+// ========================================
+// CHESS ARENA — CHECKMATE CONTROLLER
+// ========================================
+
+function showCheckmate(winner = "WHITE") {
+  const overlay = document.getElementById("checkmate-overlay");
+  const winnerText = document.getElementById("checkmate-winner");
+  const particles = document.getElementById("checkmate-particles");
+
+  if (!overlay || !winnerText || !particles) return;
+
+  winnerText.textContent = `${winner.toUpperCase()} WINS`;
+
+  particles.replaceChildren();
+
+  for (let i = 0; i < 45; i++) {
+    const particle = document.createElement("span");
+    particle.className = "checkmate-particle";
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.animationDelay = `${Math.random() * 1.8}s`;
+    particle.style.animationDuration = `${2 + Math.random() * 2}s`;
+    particle.style.background =
+      ["#ffdb83", "#ffffff", "#a99aff", "#79d9ff"][
+        Math.floor(Math.random() * 4)
+      ];
+
+    particles.appendChild(particle);
+  }
+
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+}
+
+function hideCheckmate() {
+  const overlay = document.getElementById("checkmate-overlay");
+  if (!overlay) return;
+
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+}
+
+document.getElementById("checkmate-rematch")?.addEventListener("click", () => {
+  hideCheckmate();
+
+  // Reloading safely resets the existing game and board.
+  window.location.reload();
+});
+
+console.log("Checkmate animation controller loaded!");
+</script>
+<!-- CHESS ARENA CHECKMATE SCREEN -->
+<div id="checkmate-overlay" aria-hidden="true">
+  <div class="checkmate-particles" id="checkmate-particles"></div>
+  <div class="checkmate-crown">♛</div>
+  <h1>CHECKMATE</h1>
+  <p id="checkmate-winner">WHITE WINS</p>
+  <button id="checkmate-rematch">PLAY AGAIN</button>
+</div>
+</body>
+</html>

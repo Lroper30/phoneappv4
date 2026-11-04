@@ -1,0 +1,195 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #171c2b;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+    background-color: #5db1ad;
+    box-sizing: border-box;
+}
+
+#game-controls {
+    position: absolute;
+    z-index: 4;
+    top: max(8px, env(safe-area-inset-top));
+    right: max(8px, env(safe-area-inset-right));
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 12px;
+    background: rgba(15, 20, 33, .78);
+}
+
+#game-controls button {
+    min-height: 36px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 6px;
+    color: #fff;
+    background: #315a83;
+    font: bold 13px Arial, sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+#game-controls button:hover {
+    background: #4479aa;
+}
+
+#game-controls button:focus-visible {
+    outline: 3px solid #ffd85c;
+    outline-offset: 2px;
+}
+
+#restart-button {
+    background: #8e3f47 !important;
+}
+
+#restart-button:hover {
+    background: #b94d58 !important;
+}
+
+h1 {
+    color: #ffffff; /* White color for the title */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Shadow for the title */
+}
+
+#info {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #ffffff; /* White text color for info */
+}
+
+#tower-selection {
+    margin-bottom: 20px;
+}
+
+#buy-tower {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #ffcc00; /* Gold color for the button */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#buy-tower:disabled {
+    background-color: #cccccc; /* Grey color when disabled */
+    cursor: not-allowed; /* Change cursor to indicate disabled */
+}
+
+#buy-tower:hover:not(:disabled) {
+    background-color: #e6b800; /* Darker gold on hover */
+}
+
+#gameCanvas {
+    border: 1px solid #333; /* Border around the game canvas */
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+#game-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#game-canvas canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: fill;
+}
+
+#touch-controls {
+    position: absolute;
+    z-index: 3;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    display: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    pointer-events: none;
+}
+
+#touch-controls button {
+    min-height: clamp(48px, 9vh, 68px);
+    border: 1px solid rgba(255,255,255,.52);
+    border-radius: 18px;
+    background: rgba(15, 25, 45, .55);
+    color: #fff;
+    font: bold 17px Arial, sans-serif;
+    text-shadow: 0 1px 3px #000;
+    touch-action: none;
+    pointer-events: auto;
+}
+
+#touch-controls button[data-touch-control="jump"] {
+    background: rgba(39, 120, 84, .72);
+}
+
+#touch-controls button.pressed {
+    transform: scale(.96);
+    background: rgba(84, 150, 236, .8);
+}
+
+#start-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #28a745; /* Green color for the start button */
+    color: white; /* White text color for the button */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#start-button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+#timer {
+    font-size: 20px;
+    color: #ffffff; /* White color for timer */
+}
+
+@media (max-width: 768px) {
+    #game {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+    }
+
+    #info, #tower-selection, #start-button {
+        font-size: 16px; /* Smaller font size on mobile */
+    }
+
+    #touch-controls {
+        display: grid;
+    }
+}
+
+@media (pointer: coarse) {
+    #touch-controls {
+        display: grid;
+    }
+}

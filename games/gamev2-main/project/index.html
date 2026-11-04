@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Coin Collector: The Great Collect-a-thon</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+    <main id="game">
+        <div id="game-controls" aria-label="Game controls">
+            <button id="pause-button" type="button" aria-pressed="false">Pause</button>
+            <button id="restart-button" type="button">Restart</button>
+        </div>
+        <div id="game-canvas"></div>
+        <div id="touch-controls" aria-label="Touch controls">
+            <button type="button" data-touch-control="left" aria-label="Move left">←</button>
+            <button type="button" data-touch-control="right" aria-label="Move right">→</button>
+            <button type="button" data-touch-control="jump" aria-label="Jump">Jump ↑</button>
+        </div>
+    </main>
+    <script src="phaser.js"></script>
+    <script src="game.js"></script>
+    </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "empire-quest-study-game",
+  "private": true,
+  "scripts": {
+    "start:rooms": "node multiplayer-server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
